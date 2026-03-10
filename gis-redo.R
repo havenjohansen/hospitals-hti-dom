@@ -27,7 +27,6 @@ sites_dom = vect("Dominican Republic") # nrow 1081
 
 # subset to remove places of worship, dentist, NA
 sites_hti = terra::subset(sites_hti, sites_hti$amenity == c("hospital", "pharmacy", "clinic", "doctors")) # nrow 1988
-subset(v, v$NAME_1 == "Diekirch", c("NAME_1", "NAME_2"))
 # s4 warning need to check
 
 # subset to remove dentist, NA
@@ -57,7 +56,7 @@ dom_hti = aggregate(dom_hti_test)
 dom_hti_line = as.lines(dom_hti)
 # plot looks good
 
-#### MAKE POINTS TALK TO EACH OTHER #### 
+#### ELEVATION ####
 
 # create generic ID, create dataframe, extract elevation values for points and attach to attribute
 sites_dom_hti$id_check = 1:nrow(sites_dom_hti)
