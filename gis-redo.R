@@ -26,16 +26,13 @@ sites_dom = vect("Dominican Republic") # nrow 1081
 #### DATA CLEANING ####
 
 # subset to remove places of worship, dentist, NA
-sites_hti = terra::subset(sites_hti, sites_hti$amenity == c("hospital", "pharmacy", "clinic", "doctors")) # nrow 1988
-# s4 warning need to check
+sites_hti = terra::subset(sites_hti, sites_hti$amenity %in% c("hospital", "pharmacy", "clinic", "doctors")) # nrow 1988
 
 # subset to remove dentist, NA
-sites_dom = subset(sites_dom, sites_dom$amenity %in% c("hospital", "pharmacy", "clinic", "doctors")) # nrow 945
-# confirmed successful
+sites_dom = terra::subset(sites_dom, sites_dom$amenity %in% c("hospital", "pharmacy", "clinic", "doctors")) # nrow 945
 
 # combine sites
 sites_dom_hti = union(sites_hti, sites_dom)
-# note to check that the data cleaning turned out the same in arcgis
 
 #### COORDINATE SYSTEM (un-comment if you want to re-check) ####
 
@@ -58,9 +55,7 @@ dom_hti_line = as.lines(dom_hti)
 
 #### ELEVATION ####
 
-# create generic ID, create dataframe, extract elevation values for points and attach to attribute
-sites_dom_hti$id_check = 1:nrow(sites_dom_hti)
-
+# create dataframe, extract elevation values for points and attach to attribute
 df_dom_hti = terra::extract(
   x = elevation,
   y = sites_dom_hti,
@@ -68,7 +63,7 @@ df_dom_hti = terra::extract(
 )
 
 sites_dom_hti$elevation = df_dom_hti[, 2]
-# plot-wise this looks wrong. also there are some repeat entries
+# plot-wise this looks wrong. also there are some repeat entries, maybe sites can count as more than one thing?
 
 #### DISTANCE TO COASTLINE ####
 
@@ -84,9 +79,7 @@ dom_hti_dist = mask(dom_hti_dist, dom_hti)
 plot(dom_hti_dist)
 plot(dom_hti_line, add = TRUE)
 
-# create generic ID, create dataframe, extract distance values for points and attach to attribute
-dom_hti_line$id_check = 1:nrow(dom_hti_line)
-
+# create dataframe, extract distance values for points and attach to attribute
 dist_df = terra::extract(
   x = dom_hti_dist,
   y = sites_dom_hti,
