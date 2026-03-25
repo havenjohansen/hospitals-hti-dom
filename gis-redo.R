@@ -8,8 +8,9 @@ rm(list=ls())
 graphics.off()
 
 library(terra)
-
-here::here("/Users/havenjohansen/Documents/github/hospitals-hti-dom")
+library(raster)
+library(magrittr)
+library(sf)
 
 # load country shapefiles
 hti = geodata::gadm(country = "HTI", level = 0, path = ".") 
@@ -63,7 +64,10 @@ df_dom_hti = terra::extract(
 )
 
 sites_dom_hti$elevation = df_dom_hti[, 2]
-# plot-wise this looks wrong. also there are some repeat entries, maybe sites can count as more than one thing?
+
+plot(sites_dom_hti, "elevation", col = rainbow(10))
+# there are some repeat entries, maybe sites can count as more than one thing?
+# getting closer!
 
 #### DISTANCE TO COASTLINE ####
 
@@ -90,5 +94,3 @@ dom_hti_line$distance = dist_df[, 2]
 
 plot(dist_df, col = map.pal("elevation", 3))
 # units are meters. concerned that there are 0s
-
-
