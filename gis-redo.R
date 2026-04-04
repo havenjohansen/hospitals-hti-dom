@@ -65,9 +65,14 @@ df_dom_hti = terra::extract(
 
 sites_dom_hti$elevation = df_dom_hti[, 2]
 
-plot(sites_dom_hti, "elevation", col = rainbow(10))
-# there are some repeat entries, maybe sites can count as more than one thing?
-# getting closer!
+plot(sites_dom_hti, 
+     breaks = c(0, 10, 100, 1000), 
+     "elevation")
+
+plot(dom_hti_line, add = TRUE)
+# there are some repeat entries, I think that sites can count as more than one thing
+# I believe the bottom of the map is getting cut off in the health site data and that's carrying over, might be one or two points missing
+
 
 #### DISTANCE TO COASTLINE ####
 
@@ -82,6 +87,9 @@ dom_hti_dist = mask(dom_hti_dist, dom_hti)
 
 plot(dom_hti_dist)
 plot(dom_hti_line, add = TRUE)
+
+
+dist_test = terra::distance(dom_hti_line, sites_dom_hti)
 
 # create dataframe, extract distance values for points and attach to attribute
 dist_df = terra::extract(
