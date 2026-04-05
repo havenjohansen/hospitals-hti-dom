@@ -8,8 +8,7 @@ rm(list=ls())
 graphics.off()
 
 library(terra)
-library(raster)
-library(magrittr)
+# library(raster)
 library(sf)
 
 # load country shapefiles
@@ -76,29 +75,25 @@ plot(dom_hti_line, add = TRUE)
 
 #### DISTANCE TO COASTLINE ####
 
-# create blank raster and call line into raster
-dom_hti_rast = rast(ext = ext(dom_hti_line), res = 0.009, crs = crs(dom_hti_line))
-line_rast = rasterize(dom_hti_line, dom_hti_rast)
-# calculate distance
-dom_hti_dist = terra::distance(line_rast)
-# mask to original polygon
-dom_hti_dist = mask(dom_hti_dist, dom_hti)
-# masking back to polygon instead of line here -- returns a blank plot if you mask to line
+sites_sf = sf::st_as_sf(sites_dom_hti)
+line_sf = sf::st_as_sf(dom_hti_line)
 
-plot(dom_hti_dist)
+dist_test = st_distance(line_sf,
+                        sites_sf)
+
+distance_df = dist_test %>%
+  t() %>% # transpose to set up columns vs. rows for data frame?
+  as.data.frame
+
+units(distance_df$.) = "km"  # set to kilometers 
+
+# full data frame with raster IDs
+sites_dom_hti$distance = distance_df[, 1]
+
+plot(sites_dom_hti, 
+     breaks = c(0, 10, 50, 100), 
+     "distance")
+
 plot(dom_hti_line, add = TRUE)
-
-
-dist_test = terra::distance(dom_hti_line, sites_dom_hti)
-
-# create dataframe, extract distance values for points and attach to attribute
-dist_df = terra::extract(
-  x = dom_hti_dist,
-  y = sites_dom_hti,
-  na.rm = TRUE,
-)
-
-dom_hti_line$distance = dist_df[, 2]
-
-plot(dist_df, col = map.pal("elevation", 3))
-# units are meters. concerned that there are 0s
+# seems that some of these are getting misclassified
+# zeros are still concerning
