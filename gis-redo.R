@@ -83,9 +83,3 @@ sites_dom_hti = cbind(sites_dom_hti, dist_test1)
 plot(sites_dom_hti,
      breaks = c(0, 5, 10, 20, 50, 250),
      "V1")
-
-sites_sf = sf::st_as_sf(sites_dom_hti)
-line_sf = sf::st_as_sf(dom_hti_line)
-
-dist_test = st_distance(line_sf, sites_sf)
-plot(dom_hti_line, add = TRUE)
