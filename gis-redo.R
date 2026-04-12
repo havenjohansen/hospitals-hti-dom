@@ -72,7 +72,6 @@ plot(dom_hti_line, add = TRUE)
 # there are some repeat entries, I think that sites can count as more than one thing
 # I believe the bottom of the map is getting cut off in the health site data and that's carrying over, so there might be one or two points missing
 
-
 #### DISTANCE TO COASTLINE ####
 
 dist_test1 = terra::distance(dom_hti_line, sites_dom_hti, unit = "km")
